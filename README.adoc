@@ -1,0 +1,5 @@
+= In the beginning there was darkness
+Marco Schmidt <marco.schmidt˛taugamma.eu>
+
+https://www.rpi4os.com/part1-bootstrapping/
+
