@@ -22,5 +22,8 @@ clean:
 
 
 run:
-	qemu-system-aarch64 -machine virt -cpu cortex-a57 -vga none -net none -pidfile qemu.pid  -nographic -semihosting -kernel kernel8.elf
+	qemu-system-aarch64  -cpu cortex-a57 -machine virt \
+	-monitor stdio \
+	-vga none -device ramfb \
+	-net none -pidfile qemu.pid -semihosting -kernel kernel8.elf
 

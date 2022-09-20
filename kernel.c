@@ -16,7 +16,7 @@ void print(const char *s) {
  
 void kmain(void) {
      print("Hello world!\n");
-     _exit(0);
+     // _exit(0);
 }
 
 
