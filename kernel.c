@@ -76,7 +76,7 @@ void write_xrgb256_pixel(fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]) {
 
 void _exit(int status);
 
-void kmain(void) {
+void kernel_main(void) {
   extern sU64 _stack_top;
 
   sU64 heap_start = (sU64)&_stack_top;

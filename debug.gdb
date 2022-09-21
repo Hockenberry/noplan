@@ -4,7 +4,6 @@ set verbose off
 
 target remote localhost:1234
 
-# at entry point - cmd1
-b kmain
+b kernel_main
 b itoa
 
