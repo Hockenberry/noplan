@@ -14,7 +14,6 @@
 #define DRM_FORMAT_XRGB8888                                                    \
   fourcc_code('X', 'R', '2', '4') /* [31:0] x:R:G:B 8:8:8:8 little endian */
 
-
 #pragma pack(pop)
 
 typedef struct {
@@ -27,7 +26,6 @@ typedef struct {
 } fb_info;
 
 int ramfb_setup(fb_info *fb);
-
 
 void write_xrgb256_pixel(fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]);
 void write_rgb256_pixel(fb_info *fb, sU16 x, sU16 y, const sU8 pixel[3]);
@@ -66,7 +64,6 @@ int ramfb_setup(fb_info *fb) {
       .stride = __builtin_bswap32(fb->fb_stride),
   };
 
-
   qemu_cfg_write_entry(&cfg, select, sizeof(cfg));
 
   return 0;
@@ -80,14 +77,11 @@ void write_xrgb256_pixel(fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]) {
 void _exit(int status);
 
 void kmain(void) {
-  extern sU64 _end;
+  extern sU64 _stack_top;
 
-  sU64 heap_start = (sU64)&_end;
+  sU64 heap_start = (sU64)&_stack_top;
 
-  kprintln(itoa(_end, 16));
-
-
-
+  kprintln(itoa(_stack_top, 16));
 
   kprint("Hello world!\n");
 
@@ -107,8 +101,6 @@ void kmain(void) {
   sU32 stride = bpp * w;
 
   kprint("huhu 0\n");
-
-
 
   fb_info fb = {
       .fb_addr = heap_start,

@@ -1,6 +1,5 @@
 #define SERIAL_MMIO 0x09000000
 
-
 static volatile unsigned int *uart = (unsigned int *)SERIAL_MMIO;
 
 void putchar(char c) { *uart = c; }
@@ -20,13 +19,12 @@ void kprintln(const char *s) {
   putchar('\n');
 }
 
-char* itoa(int val, int base)
-{
+char *itoa(int val, int base) {
+  static const char DIGITS[] = "0123456789abcdef";
   static char buf[32] = {0};
   int i = 30;
-
-  for(; val && i ; --i, val /= base)
-    buf[i] = "0123456789abcdef"[val % base];
-
-  return &buf[i+1];
+  for (; val && i; --i, val /= base) {
+    buf[i] = DIGITS[val % base];
+  }
+  return &buf[i + 1];
 }

@@ -1,7 +1,7 @@
 CFILES = $(wildcard *.c)
 OFILES = $(CFILES:.c=.o)
 
-CCFLAGS = -Wall -O2 -ffreestanding -nostdlib
+CCFLAGS = -g -Wall -ffreestanding -nostdlib
 
 CC = aarch64-elf-gcc
 LD = aarch64-elf-ld
@@ -29,6 +29,13 @@ clean:
 
 run:
 	qemu-system-aarch64  -cpu cortex-a57 -machine virt \
+	-serial stdio \
+	-vga none -device ramfb \
+	-net none -pidfile qemu.pid -semihosting \
+	-kernel kernel8.elf
+
+debug:
+	qemu-system-aarch64 -s -S -cpu cortex-a57 -machine virt \
 	-serial stdio \
 	-vga none -device ramfb \
 	-net none -pidfile qemu.pid -semihosting \

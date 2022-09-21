@@ -12,8 +12,10 @@ SECTIONS
         *(COMMON)
         __bss_end = .;
     }
-    _end = .;
+    . = ALIGN(8);
+    . += 0x1000;
     _stack_top = .;
+    _end = .;
 
    /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
 }
