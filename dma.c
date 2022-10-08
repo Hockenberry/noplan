@@ -50,7 +50,7 @@ static sU64 mmio_read_bsw64(sU64 addr) {
   return __builtin_bswap64(*mmio);
 }
 
-static void qemu_cfg_dma_transfer(void *address, sU32 length, sU32 control) {
+static void qemu_cfg_dma_transfer(const void *address, sU32 length, sU32 control) {
   QemuCfgDmaAccess access = {.address = __builtin_bswap64((sU64)address),
                              .length = __builtin_bswap32(length),
                              .control = __builtin_bswap32(control)};
@@ -76,7 +76,7 @@ static void qemu_cfg_read_entry(void *buf, int e, int len) {
   qemu_cfg_dma_transfer(buf, len, control);
 }
 
-void qemu_cfg_write_entry(void *buf, sU32 e, sU32 len) {
+void qemu_cfg_write_entry(const void *buf, sU32 e, sU32 len) {
   sU32 control = (e << 16) | QEMU_CFG_DMA_CTL_SELECT | QEMU_CFG_DMA_CTL_WRITE;
   qemu_cfg_dma_transfer(buf, len, control);
 }

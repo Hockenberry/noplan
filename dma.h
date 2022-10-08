@@ -30,7 +30,7 @@ struct QemuCfgFile {
   char name[56];
 };
 
-void qemu_cfg_write_entry(void *buf, sU32 e, sU32 len);
+void qemu_cfg_write_entry(const void *buf, sU32 e, sU32 len);
 int qemu_cfg_find_file();
 int check_fw_cfg_dma();
 

@@ -25,10 +25,10 @@ typedef struct {
   sU32 fb_size;
 } fb_info;
 
-int ramfb_setup(fb_info *fb);
+int ramfb_setup(const fb_info *fb);
 
-void write_xrgb256_pixel(fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]);
-void write_rgb256_pixel(fb_info *fb, sU16 x, sU16 y, const sU8 pixel[3]);
+void write_xrgb256_pixel(const fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]);
+void write_rgb256_pixel(const fb_info *fb, sU16 x, sU16 y, const sU8 pixel[3]);
 void draw_rgb256_map(fb_info *fb, sU32 x_res, sU32 y_res, sU8 *rgb_map);
 
 void memcpy_(void *dest, const void *src, sU64 n) {
@@ -39,13 +39,13 @@ void memcpy_(void *dest, const void *src, sU64 n) {
   }
 }
 
-void write_rgb256_pixel(fb_info *fb, sU16 x, sU16 y, const sU8 pixel[3]) {
+void write_rgb256_pixel(const fb_info *fb, sU16 x, sU16 y, const sU8 pixel[3]) {
   // offset one byte (xrgb)
   void *d = (void *)fb->fb_addr + ((y * fb->fb_stride) + (x * fb->fb_bpp));
   memcpy_(d, pixel, 4);
 }
 
-int ramfb_setup(fb_info *fb) {
+int ramfb_setup(const fb_info *fb) {
 
   kprint("Huhu\n");
 
@@ -55,7 +55,7 @@ int ramfb_setup(fb_info *fb) {
     return 1;
   }
 
-  struct QemuRAMFBCfg cfg = {
+  const struct QemuRAMFBCfg cfg = {
       .addr = __builtin_bswap64(fb->fb_addr),
       .fourcc = __builtin_bswap32(DRM_FORMAT_XRGB8888),
       .flags = __builtin_bswap32(0),
@@ -69,7 +69,7 @@ int ramfb_setup(fb_info *fb) {
   return 0;
 }
 
-void write_xrgb256_pixel(fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]) {
+void write_xrgb256_pixel(const fb_info *fb, sU16 x, sU16 y, sU8 pixel[4]) {
   memcpy_((void *)fb->fb_addr + ((y * fb->fb_stride) + (x * fb->fb_bpp)), pixel,
           4);
 }
@@ -102,7 +102,7 @@ void kernel_main(void) {
 
   kprint("huhu 0\n");
 
-  fb_info fb = {
+  const fb_info fb = {
       .fb_addr = heap_start,
       .fb_width = w,
       .fb_height = h,
@@ -143,7 +143,6 @@ void _exit(int status) {
   __asm__ __volatile__("mov r0, #0x18; ldr r1, =#0x20026; svc 0x00123456");
 #elif defined(__aarch64__)
   /* TODO actually use the exit value here, just for fun. */
-
   __asm__ __volatile__("mov x1, #0x26\n"
                        "movk x1, #2, lsl #16\n"
                        "str x1, [sp,#0]\n"

@@ -7,9 +7,9 @@ CC = aarch64-elf-gcc
 LD = aarch64-elf-ld
 OBJCOPY = aarch64-elf-objcopy
 
-CC = aarch64-linux-gnu-gcc
-LD = aarch64-linux-gnu-ld
-OBJCOPY = aarch64-linux-gnu-objcopy
+#CC = aarch64-linux-gnu-gcc
+#LD = aarch64-linux-gnu-ld
+#OBJCOPY = aarch64-linux-gnu-objcopy
 
 all: clean kernel8.img
 
