@@ -1,22 +1,20 @@
-#define SERIAL_MMIO 0x09000000
+#include "serial.h"
 
-static volatile unsigned int *uart = (unsigned int *)SERIAL_MMIO;
-
-void putchar(char c) { *uart = c; }
+#include "qemu_uart.h"
 
 void kprint(const char *s) {
   while (*s != '\0') {
-    putchar(*s);
+    qemu_putchar(*s);
     s++;
   }
 }
 
 void kprintln(const char *s) {
   while (*s != '\0') {
-    putchar(*s);
+    qemu_putchar(*s);
     s++;
   }
-  putchar('\n');
+  qemu_putchar('\n');
 }
 
 char *itoa(int val, int base) {
@@ -28,3 +26,4 @@ char *itoa(int val, int base) {
   }
   return &buf[i + 1];
 }
+
