@@ -66,7 +66,7 @@ enum {
 
 #define AUX_MU_BAUD(baud) ((AUX_UART_CLOCK/(baud*8))-1)
 
-void uart_init() {
+void uart_init(void) {
   mmio_write(AUX_ENABLES, 1); //enable UART1
   mmio_write(AUX_MU_IER_REG, 0);
   mmio_write(AUX_MU_CNTL_REG, 0);
@@ -87,7 +87,7 @@ void uart_writeByteBlockingActual(unsigned char ch) {
   mmio_write(AUX_MU_IO_REG, (unsigned int)ch);
 }
 
-void uart_write_text(char *buffer) {
+void uart_write_text(const char *buffer) {
   while (*buffer) {
     if (*buffer == '\n') uart_writeByteBlockingActual('\r');
     uart_writeByteBlockingActual(*buffer++);

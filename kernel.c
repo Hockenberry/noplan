@@ -1,7 +1,8 @@
 #include "dma.h"
 #include "machine.h"
-#include "serial.h"
 #include "qemu_framebuffer.h"
+#include "rpi_uart.h"
+#include "serial.h"
 
 
 int ramfb_setup(const fb_info *fb) {
@@ -32,6 +33,9 @@ int ramfb_setup(const fb_info *fb) {
 void _exit(int status);
 
 void kernel_main(void) {
+  uart_init();
+  uart_write_text("Hello World!");
+  
   extern sU64 _stack_top;
 
   sU64 heap_start = (sU64)&_stack_top;

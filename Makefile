@@ -36,7 +36,10 @@ clean:
 # qemu-system-arm -kernel ~/qemu_vms/<your-kernel-qemu> -cpu arm1176 -m 256 -M versatilepb -serial stdio -append "root=/dev/sda2 rootfstype=ext4 rw" -hda ~/qemu_vms/<your-jessie-image.img> -redir tcp:5022::22 -no-reboot
 # https://stackoverflow.com/questions/67045438/emulating-raspberry-pi-4-with-qemu/71185370#71185370
 run:
-	qemu-system-aarch64 -M virt,highmem=off -smp 8 -m 2G -cpu cortex-a72 -kernel kernel8.elf \
+	qemu-system-aarch64 \
+		-M virt,highmem=off,accel=hvf \
+		-smp 8 -m 1G -cpu cortex-a72 -kernel kernel8.elf \
+		-pidfile qemu.pid \
 	-serial stdio \
 	-device VGA,id=vga1 -device secondary-vga,id=vga2 -object iothread,id=io1 
 

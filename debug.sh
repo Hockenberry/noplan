@@ -1,4 +1,4 @@
 #!/bin/bash
 
-gdb --command=debug.gdb kernel8.elf
+lldb --command=debug.gdb kernel8.elf
 
