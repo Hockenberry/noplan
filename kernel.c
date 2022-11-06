@@ -33,6 +33,8 @@ int ramfb_setup(const fb_info *fb) {
 void _exit(int status);
 
 void kernel_main(void) {
+  while(1) { ; }
+  
   uart_init();
   uart_write_text("Hello World!");
   
