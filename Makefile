@@ -4,26 +4,24 @@ OFILES = $(CFILES:.c=.o)
 QEMU_CFILES = $(wildcard qemu/*.c)
 QEMU_OFILES = $(QEMU_CFILE:%.c=%.o)
 
-CCFLAGS = -g -Wall -ffreestanding -nostdlib
+CFLAGS = -Wall -O2 -ffreestanding -nostdlib -mcpu=cortex-a53+nosimd
 
-CC = aarch64-elf-gcc
-LD = aarch64-elf-ld
-OBJCOPY = aarch64-elf-objcopy
-
-#CC = aarch64-linux-gnu-gcc
-#LD = aarch64-linux-gnu-ld
-#OBJCOPY = aarch64-linux-gnu-objcopy
+CC = clang
+LD = ld.lld
+OBJCOPY = llvm-objcopy
 
 all: 	clean kernel8.img
 
 boot.o: boot.S
-	$(CC) $(CCFLAGS) -c boot.S -o boot.o
+	$(CC) --target=aarch64-elf -c $< -o $@
 
 %.o: %.c
-	$(CC) $(CCFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) --target=aarch64-elf $(CFLAGS) -c $< -o $@
+
 
 kernel8.img: boot.o $(OFILES) $(QEMU_OFILES)
-	$(LD) -nostdlib boot.o $(OFILES) $(QEMU_OFILES) -T link.ld -o kernel8.elf
+	$(LD) -m aarch64elf -nostdlib boot.o $(OFILES) $(QEMU_OFILES) -T link.ld -o kernel8.elf
 	$(OBJCOPY) -O binary kernel8.elf kernel8.img
 
 clean:
@@ -37,12 +35,13 @@ rpi:	kernel8.img
 	qemu-system-aarch64 \
 	-M raspi3b -cpu cortex-a72 \
 	-kernel kernel8.img \
-	-m 1G -smp 4 -serial stdio -d in_asm 
+	-m 1G \
+	-serial null -serial stdio  -d in_asm 
 
-run:
+run:	kernel8.img
 	qemu-system-aarch64 \
 		-M virt,highmem=off,accel=hvf \
-		-smp 8 -m 1G -cpu cortex-a72 -kernel kernel8.elf \
+		-smp 8 -m 1G -cpu cortex-a72 -kernel kernel8.img \
 		-pidfile qemu.pid \
 	-serial stdio \
 	-device VGA,id=vga1 -device secondary-vga,id=vga2 -object iothread,id=io1 

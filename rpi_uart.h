@@ -6,6 +6,7 @@
 void rpi_putchar(char ch);
 
 void uart_init(void);
+void uart_send(unsigned char ch);
 void uart_write_text(const char *buffer);
 
 #endif
