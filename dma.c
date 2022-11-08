@@ -1,6 +1,8 @@
 #include "dma.h"
-#include "serial.h"
+
 #include "machine.h"
+#include "mmio.h"
+#include "serial.h"
 
 #define QEMU_CFG_FILE_DIR 0x19
 
@@ -25,32 +27,8 @@ int memcmp_str(const void *str1, const void *str2, sU64 count) {
   return 0;
 }
 
-static void mmio_write16(sU64 addr, sU16 val) {
-  volatile sU16 *mmio = (volatile sU16 *)addr;
-  *mmio = val;
-}
-
-static void mmio_write_bsw16(sU64 addr, sU16 val) {
-  volatile sU16 *mmio = (volatile sU16 *)addr;
-  *mmio = __builtin_bswap64(val);
-}
-
-static void mmio_write64(sU64 addr, sU64 val) {
-  volatile sU64 *mmio = (volatile sU64 *)addr;
-  *mmio = val;
-}
-
-static void mmio_write_bsw64(sU64 addr, sU64 val) {
-  volatile sU64 *mmio = (volatile sU64 *)addr;
-  *mmio = __builtin_bswap64(val);
-}
-
-static sU64 mmio_read_bsw64(sU64 addr) {
-  volatile sU64 *mmio = (volatile sU64 *)addr;
-  return __builtin_bswap64(*mmio);
-}
-
-static void qemu_cfg_dma_transfer(const void *address, sU32 length, sU32 control) {
+static void qemu_cfg_dma_transfer(const void *address, sU32 length,
+                                  sU32 control) {
   QemuCfgDmaAccess access = {.address = __builtin_bswap64((sU64)address),
                              .length = __builtin_bswap32(length),
                              .control = __builtin_bswap32(control)};
