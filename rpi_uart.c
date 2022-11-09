@@ -52,16 +52,26 @@ static unsigned int uart_is_byte_ready_to_send(void) {
   return mmio_read(AUX_MU_LSR_REG) & 0x20;
 }
 
+static bool uart_is_byte_ready_to_recv(void) {
+  return (mmio_read(AUX_MU_LSR_REG) & 0x01) != 0;
+}
+
+
 void uart_send(unsigned char ch) {
   while (!uart_is_byte_ready_to_send())
     ;
   mmio_write(AUX_MU_IO_REG, (unsigned int)ch);
 }
 
-
-bool uart_is_byte_ready_to_recv(void) {
-  return (mmio_read(AUX_MU_LSR_REG) & 0x01) != 0;
+void uart_hex(unsigned int d) {
+  for (int c = 28; c >= 0; c-=4) {
+    unsigned int n = (d >> c) & 0xF;
+    // 0-9 => '0'-'9', 10-15 => 'A'-'F'
+    n += n > 9 ? 0x37 : 0x30;
+    uart_send(n);
+  }
 }
+
 
 /**
  * Receive a character

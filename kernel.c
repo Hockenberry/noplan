@@ -3,6 +3,8 @@
 #include "qemu_framebuffer.h"
 #include "rpi_uart.h"
 #include "serial.h"
+#include "mbox.h"
+
 
 void _exit(int status);
 
@@ -12,10 +14,34 @@ void kernel_main(void) {
   kprintln("Hello noplan!"); 
   kprintln(itoa(0x1234, 16));
 
+
+  unsigned int *box;
+  if (mbox_buffer_alloc(8 * 4, (void**)&box)){
+     box[0] = 8*4;                  // length of the message
+     box[1] = MBOX_REQUEST;         // this is a request message
+     box[2] = MBOX_TAG_GETSERIAL;   // get serial number command
+     box[3] = 8;                    // buffer size
+     box[4] = 8;
+     box[5] = 0;                    // clear output buffer
+     box[6] = 0;
+     
+     box[7] = MBOX_TAG_LAST;
+
+     if (mbox_call(MBOX_CH_PROP)){
+        uart_puts("My serial number is: ");
+        uart_hex(box[6]);
+        uart_hex(box[5]);
+        uart_puts("\n");
+     } else {
+       uart_puts("Unable to query serial!\n");
+     }
+    
+  }
+
   kprintln("Waiting...");
 
   while (1) {
-    ;
+    uart_send(uart_getc());
   }
 
   // _exit(0);
