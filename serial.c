@@ -1,20 +1,21 @@
 #include "serial.h"
 
 #include "qemu_uart.h"
+#include "rpi_uart.h"
 
 void kprint(const char *s) {
   while (*s != '\0') {
-    qemu_putchar(*s);
+    uart_send(*s);
     s++;
   }
 }
 
 void kprintln(const char *s) {
   while (*s != '\0') {
-    qemu_putchar(*s);
+    uart_send(*s);
     s++;
   }
-  qemu_putchar('\n');
+  uart_send('\n');
 }
 
 char *itoa(int val, int base) {

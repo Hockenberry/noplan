@@ -4,16 +4,18 @@ OFILES = $(CFILES:.c=.o)
 QEMU_CFILES = $(wildcard qemu/*.c)
 QEMU_OFILES = $(QEMU_CFILE:%.c=%.o)
 
-CFLAGS = -Wall -O2 -ffreestanding -nostdlib -mcpu=cortex-a53+nosimd
+CFLAGS = -Wall -O2 -ffreestanding -nostdlib -mcpu=cortex-a53+nosimd -ggdb
+AFLAGS = -ggdb
 
 CC = clang
 LD = ld.lld
+
 OBJCOPY = llvm-objcopy
 
 all: 	clean kernel8.img
 
 boot.o: boot.S
-	$(CC) --target=aarch64-elf -c $< -o $@
+	$(CC) --target=aarch64-elf $(AFLAGS) -c $< -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -36,7 +38,9 @@ rpi:	kernel8.img
 	-M raspi3b -cpu cortex-a72 \
 	-kernel kernel8.img \
 	-m 1G \
-	-serial null -serial stdio  -d in_asm 
+	-serial null -serial stdio
+
+        # -d in_asm 
 
 run:	kernel8.img
 	qemu-system-aarch64 \

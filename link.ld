@@ -13,6 +13,10 @@ SECTIONS
         *(.bss .bss.*)
         *(COMMON)
         __bss_end = .;
+
+	. = ALIGN(8);
+	. += 0x1000;
+	_stack_top = .;
     }
     _end = .;
 
