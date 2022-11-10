@@ -1,0 +1,22 @@
+= NOPLAN - an experimental operating system
+Marco Schmidt <marco.schmidt@taugamma.eu>
+
+== Inspiration
+
+* SerenityOS - cheers for the spirit of Andreas Kling and his videos
+* PLAN9 - keep it simple
+* https://github.com/bztsrc/raspi3-tutorial[Baldaszti Zoltan/bztsrc]
+* https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials[Andre Richter]
+
+== Installation
+
+Install the toolchain:
+```
+rustup target add aarch64-unknown-none-softfloat
+```
+Install the following tools:
+```
+$ cargo install cargo-binutils
+$ rustup component add llvm-tools-preview
+$ cargo install rustfilt
+```

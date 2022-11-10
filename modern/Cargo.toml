@@ -1,0 +1,17 @@
+[package]
+name = "noplan"
+version = "0.1.0"
+edition = "2021"
+authors = ["Marco Schmidt <marco.schmidt@taugamma.eu>"]
+
+[features]
+default = []
+bsp_rpi3 = []
+bsp_rpi4 = []
+
+[profile.release]
+lto = true
+
+[[bin]]
+name = "kernel"
+path = "src/main.rs"
