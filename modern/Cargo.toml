@@ -15,3 +15,5 @@ lto = true
 [[bin]]
 name = "kernel"
 path = "src/main.rs"
+
+[dependencies]

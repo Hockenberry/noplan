@@ -52,7 +52,6 @@ EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
 .PHONY: all doc qemu clippy clean readelf objdump nm check
 
 all: $(KERNEL_BIN)
-	echo $(LD_SCRIPT_PATH)
 
 $(LAST_BUILD_CONFIG):
 	@rm -f target/*.build_config

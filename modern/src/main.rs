@@ -6,9 +6,16 @@
 #![no_std]
 
 use core::panic::PanicInfo;
-use core::unimplemented;
+
+mod cpu;
+
+/// init code
+#[allow(dead_code)]
+unsafe fn kernel_init() -> ! {
+    panic!()
+}
 
 #[panic_handler]
 fn panic(_: &PanicInfo) -> ! {
-    unimplemented!()
+    cpu::wait_forever()
 }
