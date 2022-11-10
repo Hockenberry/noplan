@@ -1,6 +1,6 @@
+#[cfg(any(feature = "bsp_rpi3", feature = "bsp_rpi4"))]
+pub use rpi::*;
 
 #[cfg(any(feature = "bsp_rpi3", feature = "bsp_rpi4"))]
-mod raspberrypi;
+mod rpi;
 
-#[cfg(any(feature = "bsp_rpi3", feature = "bsp_rpi4"))]
-pub use raspberrypi::*;

@@ -5,17 +5,15 @@
 #![no_main]
 #![no_std]
 
-use core::panic::PanicInfo;
-
+mod bsp;
+mod console;
 mod cpu;
+mod panic_wait;
+mod print;
 
 /// init code
 #[allow(dead_code)]
 unsafe fn kernel_init() -> ! {
+    print!("Hello from Rust!\n");
     panic!()
-}
-
-#[panic_handler]
-fn panic(_: &PanicInfo) -> ! {
-    cpu::wait_forever()
 }

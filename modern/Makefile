@@ -7,7 +7,8 @@ TARGET            = aarch64-unknown-none-softfloat
 KERNEL_BIN        = kernel8.img
 QEMU_BINARY       = qemu-system-aarch64
 QEMU_MACHINE_TYPE = raspi3b
-QEMU_RELEASE_ARGS = -d in_asm -display none
+#QEMU_RELEASE_ARGS =
+QEMU_RELEASE_ARGS = -d in_asm -display none -serial stdio -serial null
 OBJDUMP_BINARY    = llvm-objdump
 NM_BINARY         = aarch64-none-elf-nm
 READELF_BINARY    = llvm-readelf
@@ -23,7 +24,7 @@ KERNEL_MANIFEST      = Cargo.toml
 KERNEL_LINKER_SCRIPT = kernel.ld
 LAST_BUILD_CONFIG    = target/$(BSP).build_config
 
-KERNEL_ELF      = target/$(TARGET)/release/kernel
+KERNEL_ELF      = target/$(TARGET)/debug/kernel
 # This parses cargo's dep-info file.
 # https://doc.rust-lang.org/cargo/guide/build-cache.html#dep-info-files
 KERNEL_ELF_DEPS = $(filter-out %: ,$(file < $(KERNEL_ELF).d)) $(KERNEL_MANIFEST) $(LAST_BUILD_CONFIG)
@@ -40,12 +41,12 @@ RUSTFLAGS = $(RUSTC_MISC_ARGS)                   \
 RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) -D warnings -D missing_docs
 
 FEATURES      = --features bsp_$(BSP)
-COMPILER_ARGS = --target=$(TARGET) $(FEATURES) --release
+COMPILER_ARGS = --target=$(TARGET) $(FEATURES)
 
-RUSTC_CMD   = cargo rustc $(COMPILER_ARGS)
+RUSTC_CMD   = cargo rustc $(COMPILER_ARGS) --bin kernel
 DOC_CMD     = cargo doc $(COMPILER_ARGS)
 CLIPPY_CMD  = cargo clippy $(COMPILER_ARGS)
-OBJCOPY_CMD = rust-objcopy --strip-all -O binary
+OBJCOPY_CMD = rust-objcopy -O binary # --strip-all
 
 EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
 
@@ -66,10 +67,10 @@ $(KERNEL_ELF): $(KERNEL_ELF_DEPS)
 ##------------------------------------------------------------------------------
 $(KERNEL_BIN): $(KERNEL_ELF)
 	$(OBJCOPY_CMD) $(KERNEL_ELF) $(KERNEL_BIN)
-	$(call color_progress_prefix, "Name")
+	#$(call color_progress_prefix, "Name")
 	echo $(KERNEL_BIN)
-	$(call color_progress_prefix, "Size")
-	$(call disk_usage_KiB, $(KERNEL_BIN))
+	#$(call color_progress_prefix, "Size")
+	#$(call disk_usage_KiB, $(KERNEL_BIN))
 
 doc:
 	$(call color_header, "Generating docs")
@@ -91,9 +92,9 @@ readelf: $(KERNEL_ELF)
 
 objdump: $(KERNEL_ELF)
 	$(OBJDUMP_BINARY) --disassemble --demangle \
-                --section .text   \
                 $(KERNEL_ELF) | rustfilt
 
+#--section .text   \
 ##------------------------------------------------------------------------------
 ## Run nm
 ##------------------------------------------------------------------------------
