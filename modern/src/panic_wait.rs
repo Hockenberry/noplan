@@ -31,12 +31,8 @@ fn panic(info: &PanicInfo) -> ! {
     print!(
         "Kernel panic!\n\n\
         Panic location:\n      File '{}', line {}, column {}\n\n",
-        location,
-        line,
-        column
+        location, line, column
     );
-
 
     cpu::wait_forever()
 }
-

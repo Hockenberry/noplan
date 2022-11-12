@@ -5,10 +5,6 @@ use crate::console;
 /// A mystical, magical device for generating QEMU output out of the void.
 struct QEMUOutput;
 
-//--------------------------------------------------------------------------------------------------
-// Private Code
-//--------------------------------------------------------------------------------------------------
-
 /// Implementing `core::fmt::Write` enables usage of the `format_args!` macros, which in turn are
 /// used to implement the `kernel`'s `print!` and `println!` macros. By implementing `write_str()`,
 /// we get `write_fmt()` automatically.
