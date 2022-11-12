@@ -10,9 +10,9 @@ QEMU_MACHINE_TYPE = raspi3b
 #QEMU_RELEASE_ARGS =
 QEMU_RELEASE_ARGS = -d in_asm -display none -serial stdio -serial null
 OBJDUMP_BINARY    = llvm-objdump
-NM_BINARY         = aarch64-none-elf-nm
+NM_BINARY         = llvm-nm
 READELF_BINARY    = llvm-readelf
-LD_SCRIPT_PATH    = $(shell pwd)/src/
+LD_SCRIPT_PATH    = $(shell pwd)/src/bsp/rpi/
 RUSTC_MISC_ARGS   = -C target-cpu=cortex-a53
 
 export LD_SCRIPT_PATH
@@ -24,7 +24,7 @@ KERNEL_MANIFEST      = Cargo.toml
 KERNEL_LINKER_SCRIPT = kernel.ld
 LAST_BUILD_CONFIG    = target/$(BSP).build_config
 
-KERNEL_ELF      = target/$(TARGET)/debug/kernel
+KERNEL_ELF      = target/$(TARGET)/release/kernel
 # This parses cargo's dep-info file.
 # https://doc.rust-lang.org/cargo/guide/build-cache.html#dep-info-files
 KERNEL_ELF_DEPS = $(filter-out %: ,$(file < $(KERNEL_ELF).d)) $(KERNEL_MANIFEST) $(LAST_BUILD_CONFIG)
@@ -41,12 +41,12 @@ RUSTFLAGS = $(RUSTC_MISC_ARGS)                   \
 RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) -D warnings -D missing_docs
 
 FEATURES      = --features bsp_$(BSP)
-COMPILER_ARGS = --target=$(TARGET) $(FEATURES)
+COMPILER_ARGS = --target=$(TARGET) $(FEATURES)  --release
 
-RUSTC_CMD   = cargo rustc $(COMPILER_ARGS) --bin kernel
+RUSTC_CMD   = cargo rustc $(COMPILER_ARGS) --verbose --bin kernel
 DOC_CMD     = cargo doc $(COMPILER_ARGS)
 CLIPPY_CMD  = cargo clippy $(COMPILER_ARGS)
-OBJCOPY_CMD = rust-objcopy -O binary # --strip-all
+OBJCOPY_CMD = rust-objcopy -O binary --strip-all
 
 EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
 
@@ -60,17 +60,15 @@ $(LAST_BUILD_CONFIG):
 	@touch $(LAST_BUILD_CONFIG)
 
 $(KERNEL_ELF): $(KERNEL_ELF_DEPS)
-	@RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(RUSTC_CMD)
+	RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(RUSTC_CMD)
 
 ##------------------------------------------------------------------------------
 ## Generate the stripped kernel binary
 ##------------------------------------------------------------------------------
-$(KERNEL_BIN): $(KERNEL_ELF)
+$(KERNEL_BIN): $(KERNEL_ELF) objdump
 	$(OBJCOPY_CMD) $(KERNEL_ELF) $(KERNEL_BIN)
-	#$(call color_progress_prefix, "Name")
-	echo $(KERNEL_BIN)
-	#$(call color_progress_prefix, "Size")
-	#$(call disk_usage_KiB, $(KERNEL_BIN))
+	@stat -f "%z" $(KERNEL_ELF)
+	@stat -f "%z" $(KERNEL_BIN)
 
 doc:
 	$(call color_header, "Generating docs")
@@ -91,12 +89,11 @@ readelf: $(KERNEL_ELF)
 	$(READELF_BINARY) --headers $(KERNEL_ELF)
 
 objdump: $(KERNEL_ELF)
-	$(OBJDUMP_BINARY) --disassemble --demangle \
-                $(KERNEL_ELF) | rustfilt
+	$(OBJDUMP_BINARY) --disassemble --demangle $(KERNEL_ELF) | rustfilt
 
 #--section .text   \
 ##------------------------------------------------------------------------------
 ## Run nm
 ##------------------------------------------------------------------------------
 nm: $(KERNEL_ELF)
-	@$(DOCKER_TOOLS) $(NM_BINARY) --demangle --print-size $(KERNEL_ELF) | sort | rustfilt
+	$(NM_BINARY) --demangle --print-size $(KERNEL_ELF) | sort | rustfilt

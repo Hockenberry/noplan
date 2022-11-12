@@ -1,19 +1,21 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT OR Apache-2.0
 
-//! NOPLAN - a experiment without a plan
 
+//! The `noplan` kernal...
+
+#![feature(asm_const)]
 #![no_main]
 #![no_std]
 
+/// Early init code.
+///
 mod bsp;
-mod console;
 mod cpu;
 mod panic_wait;
 mod print;
+mod console;
 
-/// init code
-#[allow(dead_code)]
+/// Early init code.
 unsafe fn kernel_init() -> ! {
-    print!("Hello from Rust!\n");
     panic!()
 }
