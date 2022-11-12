@@ -3,7 +3,6 @@
 
 //! The `noplan` kernal...
 
-#![feature(asm_const)]
 #![no_main]
 #![no_std]
 
