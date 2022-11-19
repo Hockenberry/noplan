@@ -13,15 +13,34 @@ use crate::console::console;
 mod bsp;
 mod console;
 mod cpu;
+mod driver;
 mod panic_wait;
 mod print;
 mod sync;
 
 /// Early init code.
 unsafe fn kernel_init() -> ! {
-    print!("NOPLAN kernal v0.1 (cpu: {})\n\n", BOOT_CORE_ID);
+    if let Err(x) = bsp::driver::init() {
+        panic!("Error init BSP driver subsystem: {}", x);
+    }
+    driver::driver_manager().init_drivers();
+    kernel_main()
+}
 
-    print!("chars written: {}", console().chars_written());
+fn kernel_main() -> ! {
+    print!("[0] {} {}\n", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+    print!("[1] Booting on: {} (cpu: {})\n", bsp::board_name(), BOOT_CORE_ID);
+    print!("[2] Drivers loaded:\n");
 
-    cpu::wait_forever()
+    driver::driver_manager().enumerate();
+
+    print!("[3] Chars written: {}", console().chars_written());
+    print!("[4] Echo input now\n");
+
+    console().clear_rx();
+
+    loop {
+        let ch = console().read_char();
+        console().write_char(ch);
+    }
 }

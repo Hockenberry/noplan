@@ -5,7 +5,6 @@ pub trait Mutex {
     fn lock<'a, R>(&'a self, f: impl FnOnce(&'a mut Self::Data) -> R) -> R;
 }
 
-
 pub struct NullLock<T>
     where
         T: ?Sized,
@@ -16,7 +15,6 @@ pub struct NullLock<T>
 unsafe impl<T> Send for NullLock<T> where T: ?Sized + Send {}
 
 unsafe impl<T> Sync for NullLock<T> where T: ?Sized + Send {}
-
 
 impl<T> NullLock<T> {
     pub const fn new(data: T) -> Self {
@@ -34,4 +32,3 @@ impl<T> Mutex for NullLock<T> {
         f(data)
     }
 }
-
