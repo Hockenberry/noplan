@@ -6,8 +6,8 @@ authors = ["Marco Schmidt <marco.schmidt@taugamma.eu>"]
 
 [features]
 default = []
-bsp_rpi3 = []
-bsp_rpi4 = []
+bsp_rpi3 = ["tock-registers"]
+bsp_rpi4 = ["tock-registers"]
 
 [profile.release]
 lto = true
@@ -17,5 +17,5 @@ name = "kernel"
 path = "src/main.rs"
 
 [dependencies]
-tock-registers = { version = "0.8.1", default-features = false, features = ["register_types"]}
+tock-registers = { version = "0.8.1", default-features = false, features = ["register_types"], optional=true}
 

@@ -8,6 +8,8 @@ pub fn nop() {
     }
 }
 
+
+
 /// Spin for `n` cycles.
 #[inline(always)]
 pub fn spin_for_cycles(n: usize) {
@@ -17,6 +19,7 @@ pub fn spin_for_cycles(n: usize) {
         }
     }
 }
+
 
 /// Pause execution.
 #[inline(always)]
