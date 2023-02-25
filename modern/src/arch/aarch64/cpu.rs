@@ -3,12 +3,8 @@ use core::arch::asm;
 
 #[inline(always)]
 pub fn nop() {
-    unsafe {
-        asm!("nop")
-    }
+    unsafe { asm!("nop") }
 }
-
-
 
 /// Spin for `n` cycles.
 #[inline(always)]
@@ -19,7 +15,6 @@ pub fn spin_for_cycles(n: usize) {
         }
     }
 }
-
 
 /// Pause execution.
 #[inline(always)]

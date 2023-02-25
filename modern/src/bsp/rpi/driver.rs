@@ -4,7 +4,7 @@ use crate::bsp::bcm2xxx_gpio::GPIO;
 use crate::bsp::bcm2xxx_pl011_uart::PL011Uart;
 use crate::bsp::physical_memory_map::mmio;
 use crate::console;
-use crate::driver::{DeviceDriverDesc, driver_manager};
+use crate::driver::{driver_manager, DeviceDriverDesc};
 
 static UART: PL011Uart = unsafe { PL011Uart::new(mmio::PL011_UART_START) };
 static GPIO: GPIO = unsafe { GPIO::new(mmio::GPIO_START) };
@@ -30,7 +30,6 @@ fn driver_gpio() -> Result<(), &'static str> {
     driver_manager().register_driver(desc);
     Ok(())
 }
-
 
 pub unsafe fn init() -> Result<(), &'static str> {
     static INIT_DONE: AtomicBool = AtomicBool::new(false);

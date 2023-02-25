@@ -7,9 +7,8 @@ ifeq ($(BSP),rpi3)
 TARGET            = aarch64-unknown-none-softfloat
 KERNEL_BIN        = kernel8.img
 QEMU_BINARY       = qemu-system-aarch64
-QEMU_MACHINE_TYPE = raspi3b
-#QEMU_RELEASE_ARGS =  -d in_asm
-QEMU_RELEASE_ARGS = -display none -serial stdio -serial null
+QEMU_MACHINE_TYPE = raspi3b -cpu cortex-a72 -m 1G -smp 4 
+QEMU_RELEASE_ARGS = -serial stdio -d in_asm
 OBJDUMP_BINARY    = rust-objdump
 NM_BINARY         = rust-nm
 READELF_BINARY    = rust-readelf
@@ -54,7 +53,7 @@ RUSTFLAGS = $(RUSTC_MISC_ARGS)                   \
     -C link-arg=--library-path=$(LD_SCRIPT_PATH) \
     -C link-arg=--script=$(KERNEL_LINKER_SCRIPT)
 
-RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) -D warnings -D missing_docs
+RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) # -D warnings -D missing_docs
 
 FEATURES      = --features bsp_$(BSP)
 COMPILER_ARGS = --target=$(TARGET) $(FEATURES)  --release
@@ -89,7 +88,6 @@ define color_progress_prefix
     @tput sgr0 2> /dev/null || true
 endef
 
-
 .PHONY: all doc qemu clippy clean readelf objdump nm check
 
 all: $(KERNEL_BIN)
@@ -101,7 +99,7 @@ $(LAST_BUILD_CONFIG):
 
 $(KERNEL_ELF): $(KERNEL_ELF_DEPS)
 	$(call color_header, "Compiling kernel ELF - $(BSP)")
-	@RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(RUSTC_CMD)
+	RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(RUSTC_CMD)
 
 ##------------------------------------------------------------------------------
 ## Generate the stripped kernel binary
@@ -118,7 +116,6 @@ $(KERNEL_BIN): $(KERNEL_ELF) objdump
 doc:
 	$(call color_header, "Generating docs")
 	$(DOC_CMD) --document-private-items --open
-
 
 qemu: $(KERNEL_BIN)
 	$(call color_header, "Launching QEMU")

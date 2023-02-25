@@ -24,17 +24,19 @@ pub trait Read {
     fn clear_rx(&self);
 }
 
-
 pub trait Statistics {
     fn chars_written(&self) -> usize {
         0
     }
-    fn chars_read(&self) -> usize { 0 }
+    fn chars_read(&self) -> usize {
+        0
+    }
 }
 
 pub trait All: Write + Read + Statistics {}
 
-static CUR_CONSOLE: NullLock<&'static (dyn All + Sync)> = NullLock::new(&null_console::NULL_CONSOLE);
+static CUR_CONSOLE: NullLock<&'static (dyn All + Sync)> =
+    NullLock::new(&null_console::NULL_CONSOLE);
 
 pub fn register_console(new_console: &'static (dyn All + Sync)) {
     CUR_CONSOLE.lock(|con| *con = new_console)
@@ -44,4 +46,3 @@ pub fn register_console(new_console: &'static (dyn All + Sync)) {
 pub fn console() -> &'static dyn All {
     CUR_CONSOLE.lock(|con| *con)
 }
-

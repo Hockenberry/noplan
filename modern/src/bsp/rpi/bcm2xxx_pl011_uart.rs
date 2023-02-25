@@ -6,9 +6,9 @@ use tock_registers::{
     registers::{ReadOnly, ReadWrite, WriteOnly},
 };
 
-use crate::{console, cpu, driver};
 use crate::bsp::utils::MMIODerefWrapper;
 use crate::sync::{Mutex, NullLock};
+use crate::{console, cpu, driver};
 
 // PL011 UART registers.
 //
@@ -262,7 +262,6 @@ impl PL011UartInner {
 
     /// Retrieve a character.
     fn read_char_converting(&mut self, blocking_mode: BlockingMode) -> Option<char> {
-
         // If RX FIFO is empty,
         if self.registers.FR.matches_all(FR::RXFE::SET) {
             // immediately return in non-blocking mode.

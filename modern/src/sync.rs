@@ -6,8 +6,8 @@ pub trait Mutex {
 }
 
 pub struct NullLock<T>
-    where
-        T: ?Sized,
+where
+    T: ?Sized,
 {
     data: UnsafeCell<T>,
 }
