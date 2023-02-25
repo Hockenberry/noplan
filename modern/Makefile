@@ -8,7 +8,7 @@ TARGET            = aarch64-unknown-none-softfloat
 KERNEL_BIN        = kernel8.img
 QEMU_BINARY       = qemu-system-aarch64
 QEMU_MACHINE_TYPE = raspi3b -cpu cortex-a72 -m 1G -smp 4 
-QEMU_RELEASE_ARGS = -serial stdio -d in_asm
+QEMU_RELEASE_ARGS = -serial null -serial stdio -d in_asm 
 OBJDUMP_BINARY    = rust-objdump
 NM_BINARY         = rust-nm
 READELF_BINARY    = rust-readelf
@@ -40,6 +40,8 @@ KERNEL_LINKER_SCRIPT = kernel.ld
 LAST_BUILD_CONFIG    = target/$(BSP).build_config
 
 KERNEL_ELF      = target/$(TARGET)/release/kernel
+# KERNEL_ELF      = target/$(TARGET)/debug/kernel
+
 # This parses cargo's dep-info file.
 # https://doc.rust-lang.org/cargo/guide/build-cache.html#dep-info-files
 KERNEL_ELF_DEPS = $(filter-out %: ,$(file < $(KERNEL_ELF).d)) $(KERNEL_MANIFEST) $(LAST_BUILD_CONFIG)
@@ -56,7 +58,7 @@ RUSTFLAGS = $(RUSTC_MISC_ARGS)                   \
 RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) # -D warnings -D missing_docs
 
 FEATURES      = --features bsp_$(BSP)
-COMPILER_ARGS = --target=$(TARGET) $(FEATURES)  --release
+COMPILER_ARGS = --target=$(TARGET) $(FEATURES) --release
 
 RUSTC_CMD   = cargo rustc $(COMPILER_ARGS) --bin kernel
 DOC_CMD     = cargo doc $(COMPILER_ARGS)
@@ -119,7 +121,11 @@ doc:
 
 qemu: $(KERNEL_BIN)
 	$(call color_header, "Launching QEMU")
-	$(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
+	$(EXEC_QEMU)  $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
+
+gdb: 	
+	$(call color_header, "Launching GDB")
+	gdb --command=debug.gdb $(KERNEL_ELF)
 
 clippy:
 	@RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(CLIPPY_CMD)
