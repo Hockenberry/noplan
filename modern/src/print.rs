@@ -1,10 +1,10 @@
 use core::fmt;
 
-use crate::console;
+use crate::simple_console;
 
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
-    console::console().write_fmt(args).unwrap();
+    simple_console::simple_console().write_fmt(args).unwrap();
 }
 
 /// Prints without a newline.

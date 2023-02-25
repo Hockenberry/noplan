@@ -8,7 +8,7 @@ TARGET            = aarch64-unknown-none-softfloat
 KERNEL_BIN        = kernel8.img
 QEMU_BINARY       = qemu-system-aarch64
 QEMU_MACHINE_TYPE = raspi3b -cpu cortex-a72 -m 1G -smp 4 
-QEMU_RELEASE_ARGS = -serial null -serial stdio -d in_asm 
+QEMU_RELEASE_ARGS = -serial null -serial stdio #-d in_asm 
 OBJDUMP_BINARY    = rust-objdump
 NM_BINARY         = rust-nm
 READELF_BINARY    = rust-readelf
@@ -119,13 +119,16 @@ doc:
 	$(call color_header, "Generating docs")
 	$(DOC_CMD) --document-private-items --open
 
-qemu: $(KERNEL_BIN)
+qemu: 	$(KERNEL_BIN)
 	$(call color_header, "Launching QEMU")
 	$(EXEC_QEMU)  $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
 
 gdb: 	
 	$(call color_header, "Launching GDB")
 	gdb --command=debug.gdb $(KERNEL_ELF)
+
+boot:	$(KERNEL_BIN)
+	cp -f $(KERNEL_BIN) /media/marco/BOOT
 
 clippy:
 	@RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(CLIPPY_CMD)

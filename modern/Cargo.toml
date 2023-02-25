@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Marco Schmidt <marco.schmidt@taugamma.eu>"]
 
 [features]
-default = []
+default = ["bsp_rpi3"]
 bsp_rpi3 = ["tock-registers"]
 bsp_rpi4 = ["tock-registers"]
 
