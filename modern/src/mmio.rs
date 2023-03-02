@@ -1,11 +1,11 @@
 use core::ptr::{read_volatile, write_volatile};
 
-pub fn mmio_write(reg: u64, val: u32) {
+pub fn mmio_write(dst: u64, val: u32) {
     unsafe {
-        write_volatile(reg as *mut u32, val);
+        write_volatile(dst as *mut u32, val);
     }
 }
 
-pub fn mmio_read(reg: u64) -> u32 {
-    unsafe { read_volatile(reg as *const u32) }
+pub fn mmio_read(src: u64) -> u32 {
+    unsafe { read_volatile(src as *const u32) }
 }

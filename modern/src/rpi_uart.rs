@@ -14,7 +14,10 @@ pub fn uart_init() {
     mmio_write(AUX_MU_MCR_REG, 0);
     mmio_write(AUX_MU_IER_REG, 0);
     mmio_write(AUX_MU_IIR_REG, 0xC6); // disable interrupts
-    mmio_write(AUX_MU_BAUD_REG, uart_speed_from_baud(115200));
+
+    // mmio_write(AUX_MU_BAUD_REG, uart_speed_from_baud(115200));
+
+    mmio_write(AUX_MU_BAUD_REG, 541);
 
     gpio_use_as_alt5(14);
     gpio_use_as_alt5(15);
@@ -77,20 +80,20 @@ fn uart_is_byte_ready_to_recv() -> bool {
 
 const AUX_BASE: u64 = PERIPHERAL_BASE + 0x215000;
 const AUX_ENABLES: u64 = AUX_BASE + 0x04;
-const AUX_MU_IO_REG: u64 = AUX_BASE + 0x40;
-const AUX_MU_IER_REG: u64 = AUX_BASE + 0x44;
-const AUX_MU_IIR_REG: u64 = AUX_BASE + 0x48;
-const AUX_MU_LCR_REG: u64 = AUX_BASE + 0x4C;
+const AUX_MU_IO_REG: u64 = AUX_BASE + 64;
+const AUX_MU_IER_REG: u64 = AUX_BASE + 68;
+const AUX_MU_IIR_REG: u64 = AUX_BASE + 72;
+const AUX_MU_LCR_REG: u64 = AUX_BASE + 76;
 
-const AUX_MU_MCR_REG: u64 = AUX_BASE + 0x50;
-const AUX_MU_LSR_REG: u64 = AUX_BASE + 0x54;
+const AUX_MU_MCR_REG: u64 = AUX_BASE + 80;
+const AUX_MU_LSR_REG: u64 = AUX_BASE + 84;
 
-const AUX_MU_MSR_REG: u64 = AUX_BASE + 0x58;
-const AUX_MU_SCRATCH: u64 = AUX_BASE + 0x5C;
-const AUX_MU_CNTL_REG: u64 = AUX_BASE + 0x60;
+const AUX_MU_MSR_REG: u64 = AUX_BASE + 88;
+const AUX_MU_SCRATCH: u64 = AUX_BASE + 92;
+const AUX_MU_CNTL_REG: u64 = AUX_BASE + 96;
 
-const AUX_MU_STAT: u64 = AUX_BASE + 0x64;
-const AUX_MU_BAUD_REG: u64 = AUX_BASE + 0x68;
+const AUX_MU_STAT: u64 = AUX_BASE + 100;
+const AUX_MU_BAUD_REG: u64 = AUX_BASE + 104;
 
 const AUX_UART_CLOCK: u32 = 500000000;
 const UART_MAX_QUEUE: u32 = 16 * 1024;

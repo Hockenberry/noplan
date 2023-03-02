@@ -31,35 +31,41 @@ mod simple_console;
 /// Early init code.
 unsafe fn kernel_init() -> ! {
     uart_init();
+    loop {
+        uart_send(b'*');
+        uart_send(b'\n');
+    }
 
     //if let Err(x) = bsp::driver::init() {
     //    panic!("Error init BSP driver subsystem: {}", x);
     //}
     //driver::driver_manager().init_drivers();
 
-    kernel_main()
+    //kernel_main()
 }
 
 fn kernel_main() -> ! {
-    for _ in 0..10 {
+    loop {
         uart_send(b'A');
     }
-    uart_send(b'\n');
+    // uart_send(b'\n');
 
-    print!(
-        "[0] {} {}\n",
-        env!("CARGO_PKG_NAME"),
-        env!("CARGO_PKG_VERSION")
-    );
-    print!(
-        "[1] Booting on: {} (cpu: {})\n",
-        bsp::board_name(),
-        BOOT_CORE_ID
-    );
+    // print!(
+    //     "[0] {} {}\n",
+    //     env!("CARGO_PKG_NAME"),
+    //     env!("CARGO_PKG_VERSION")
+    // );
+    // print!(
+    //     "[1] Booting on: {} (cpu: {})\n",
+    //     bsp::board_name(),
+    //     BOOT_CORE_ID
+    // );
 
-    print!("PERIPHERAL_BASE = {PERIPHERAL_BASE:0X}\n");
+    // print!("PERIPHERAL_BASE = {PERIPHERAL_BASE:0X}\n");
 
-    loop {}
+    // loop {
+    //     print!("*");
+    // }
 
     // driver::driver_manager().enumerate();
 

@@ -39,8 +39,8 @@ KERNEL_MANIFEST      = Cargo.toml
 KERNEL_LINKER_SCRIPT = kernel.ld
 LAST_BUILD_CONFIG    = target/$(BSP).build_config
 
-KERNEL_ELF      = target/$(TARGET)/release/kernel
-# KERNEL_ELF      = target/$(TARGET)/debug/kernel
+KERNEL_ELF      = target/$(TARGET)/release/kernal
+# KERNEL_ELF      = target/$(TARGET)/debug/kernal
 
 # This parses cargo's dep-info file.
 # https://doc.rust-lang.org/cargo/guide/build-cache.html#dep-info-files
@@ -60,7 +60,7 @@ RUSTFLAGS_PEDANTIC = $(RUSTFLAGS) # -D warnings -D missing_docs
 FEATURES      = --features bsp_$(BSP)
 COMPILER_ARGS = --target=$(TARGET) $(FEATURES) --release
 
-RUSTC_CMD   = cargo rustc $(COMPILER_ARGS) --bin kernel
+RUSTC_CMD   = cargo rustc $(COMPILER_ARGS) --bin kernal
 DOC_CMD     = cargo doc $(COMPILER_ARGS)
 CLIPPY_CMD  = cargo clippy $(COMPILER_ARGS)
 OBJCOPY_CMD = rust-objcopy -O binary --strip-all
@@ -90,7 +90,7 @@ define color_progress_prefix
     @tput sgr0 2> /dev/null || true
 endef
 
-.PHONY: all doc qemu clippy clean readelf objdump nm check
+.PHONY: all doc qemu clippy clean readelf objdump nm check boot
 
 all: $(KERNEL_BIN)
 
