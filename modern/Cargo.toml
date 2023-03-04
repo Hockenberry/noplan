@@ -6,8 +6,8 @@ authors = ["Marco Schmidt <marco.schmidt@taugamma.eu>"]
 
 [features]
 default = []
-bsp_rpi3 = ["tock-registers"]
-bsp_rpi4 = ["tock-registers"]
+bsp_rpi3 = []
+bsp_rpi4 = []
 
 [profile.release]
 # lto = true
@@ -16,6 +16,3 @@ debug=true
 [[bin]]
 name = "kernal"
 path = "src/kernal.rs"
-
-[dependencies]
-tock-registers = { version = "0.8.1", default-features = false, features = ["register_types"], optional=true}

@@ -5,31 +5,29 @@
 #![no_main]
 #![no_std]
 
-use rpi_regs::PERIPHERAL_BASE;
-
-use crate::bsp::cpu::BOOT_CORE_ID;
-use crate::console::console;
+use rpi_gpio::led_blink;
 
 use crate::rpi_uart::{uart_init, uart_send};
 
 /// Early init code.
 ///
 mod bsp;
-mod console;
 mod cpu;
-mod driver;
+mod mmio;
 mod panic_wait;
 mod print;
-mod sync;
-
-mod mmio;
 mod rpi_gpio;
 mod rpi_regs;
 mod rpi_uart;
 mod simple_console;
+mod sync;
 
 /// Early init code.
 unsafe fn kernel_init() -> ! {
+    for _ in 0..20 {
+        led_blink();
+    }
+
     uart_init();
     loop {
         uart_send(b'*');

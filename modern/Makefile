@@ -128,7 +128,7 @@ gdb:
 	gdb --command=debug.gdb $(KERNEL_ELF)
 
 boot:	$(KERNEL_BIN)
-	cp -f $(KERNEL_BIN) /media/marco/BOOT
+	cp -f $(KERNEL_BIN) /media/marco/bootfs
 
 clippy:
 	@RUSTFLAGS="$(RUSTFLAGS_PEDANTIC)" $(CLIPPY_CMD)

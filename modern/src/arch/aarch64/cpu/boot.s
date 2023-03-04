@@ -1,50 +1,32 @@
-// SPDX-License-Identifier: MIT
-//
-// Copyright (c) 2021-2022 Andre Richter <andre.o.richter@gmail.com>
+.section ".text.boot"  // Make sure the linker puts this at the start of the kernel image
 
-.macro ADR_REL register, symbol
-	adrp	\register, \symbol
-	add	\register, \register, #:lo12:\symbol
-.endm
-
-.section .text._start
+.global _start  // Execution starts here
 
 _start:
-	// Only proceed on the boot core. Park it otherwise.
-	mrs	x0, MPIDR_EL1
-	and	x0, x0, #3
-	ldr	x1, BOOT_CORE_ID      // provided by bsp/__board_name__/cpu.rs
-	cmp	x0, x1
-	bne	.parking_loop
+    // Check processor ID is zero (executing on main core), else hang
+    mrs     x1, mpidr_el1
+    and     x1, x1, #3
+    cbz     x1, 2f
 
-	// If execution reaches here, it is the boot core.
+    // We're not on the main core, so hang in an infinite wait loop
+1:  wfe
+    b       1b
+2:  // We're on the main core!
 
-	// Initialize DRAM.
-	ADR_REL	x0, __bss_start
-	ADR_REL x1, __bss_end_exclusive
+    // Set stack to start below our code
+    ldr     x1, =_start
+    mov     sp, x1
 
-.bss_init_loop:
-	cmp	x0, x1
-	beq	.prepare_rust
-	stp	xzr, xzr, [x0], #16
-	b	.bss_init_loop
+    // Clean the BSS section
+    ldr     x1, =__bss_start     // Start address
+    ldr     w2, =__bss_size      // Size of the section
+3:  cbz     w2, 4f               // Quit loop if zero
+    str     xzr, [x1], #8
+    sub     w2, w2, #1
+    cbnz    w2, 3b               // Loop if non-zero
 
-	// Prepare the jump to Rust code.
-.prepare_rust:
-	// Set the stack pointer.
-	ADR_REL	x0, __boot_core_stack_end_exclusive
-	mov	sp, x0
+    // Jump to our main() routine in C (make sure it doesn't return)
+4:  bl      _start_rust
 
-	// Jump to Rust code.
-	b	_start_rust
-	b 	.parking_loop
-
-	// Infinitely wait for events (aka "park the core").
-.parking_loop:
-	wfe
-	b	.parking_loop
-
-	
-.size	_start, . - _start
-.type	_start, function
-.global	_start
+    // In case it does return, halt the master core too
+    b       1b
