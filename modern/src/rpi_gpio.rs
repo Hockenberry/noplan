@@ -1,10 +1,10 @@
 use crate::mmio::{mmio_read, mmio_write};
 use crate::rpi_regs::PERIPHERAL_BASE;
 
-const Pull_None: u32 = 0;
+const PULL_NONE: u32 = 0;
 
 pub fn gpio_use_as_alt5(pin: u8) {
-    gpio_pull(pin, Pull_None);
+    gpio_pull(pin, PULL_NONE);
     gpio_function(pin, GPIO_FUNCTION_ALT5 as u32);
 }
 

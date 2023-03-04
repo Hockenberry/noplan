@@ -9,8 +9,6 @@ use rpi_gpio::led_blink;
 
 use crate::rpi_uart::{uart_init, uart_send};
 
-/// Early init code.
-///
 mod bsp;
 mod cpu;
 mod mmio;
@@ -34,12 +32,7 @@ unsafe fn kernel_init() -> ! {
         uart_send(b'\n');
     }
 
-    //if let Err(x) = bsp::driver::init() {
-    //    panic!("Error init BSP driver subsystem: {}", x);
-    //}
-    //driver::driver_manager().init_drivers();
-
-    //kernel_main()
+    // kernel_main()
 }
 
 fn kernel_main() -> ! {

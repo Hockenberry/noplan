@@ -1,6 +1,5 @@
 use crate::mmio::{mmio_read, mmio_write};
 use crate::rpi_gpio::gpio_use_as_alt5;
-use crate::rpi_regs::PERIPHERAL_BASE;
 
 fn uart_speed_from_baud(baud: u32) -> u32 {
     ((AUX_UART_CLOCK / (baud * 8)) - 1) as u32
@@ -66,6 +65,8 @@ pub fn uart_puts(text: &str) {
         uart_send(*b);
     }
 }
+
+use crate::rpi_regs::PERIPHERAL_BASE;
 
 const AUX_BASE: u64 = PERIPHERAL_BASE + 0x00215000;
 const AUX_ENABLES: u64 = AUX_BASE + 4;
