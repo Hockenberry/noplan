@@ -6,8 +6,7 @@ fn uart_speed_from_baud(baud: u32) -> u32 {
 }
 
 pub fn uart_init() {
-    gpio_use_as_alt5(14);
-    gpio_use_as_alt5(15);
+   
 
     mmio_write(AUX_ENABLES, 1);
     mmio_write(AUX_MU_CNTL_REG, 0);
@@ -17,9 +16,10 @@ pub fn uart_init() {
     mmio_write(AUX_MU_IIR_REG, 0xC6); // disable interrupts
 
     // mmio_write(AUX_MU_BAUD_REG, uart_speed_from_baud(115200));
-
     mmio_write(AUX_MU_BAUD_REG, 541);
 
+    gpio_use_as_alt5(14);
+    gpio_use_as_alt5(15);
     mmio_write(AUX_MU_CNTL_REG, 3); // enable RX/TX
 }
 

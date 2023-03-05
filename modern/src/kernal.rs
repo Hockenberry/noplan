@@ -22,9 +22,9 @@ mod sync;
 
 /// Early init code.
 unsafe fn kernel_init() -> ! {
-    for _ in 0..20 {
-        led_blink();
-    }
+    //for _ in 0..20 {
+    //    led_blink();
+    //}
 
     uart_init();
     loop {

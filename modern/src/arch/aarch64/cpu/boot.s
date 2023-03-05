@@ -4,10 +4,8 @@ _start:
     // Check processor ID is zero (executing on main core), else hang
     mrs     x1, mpidr_el1
     and     x1, x1, #3
-    cmp     x0, x1
-    b.ne    .parking_loop
+    cbz     x1, 2f
 
-    // We're not on the main core, so hang in an infinite wait loop
 .parking_loop:  
     wfe
     b       .parking_loop
@@ -29,8 +27,6 @@ _start:
 
     // Jump to our main() routine in C (make sure it doesn't return)
 4:  bl      _start_rust
-
-    // In case it does return, halt the master core too
     b       .parking_loop
 
 .global _start  
