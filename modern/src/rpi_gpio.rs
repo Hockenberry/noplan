@@ -47,23 +47,22 @@ fn gpio_call(pin: u8, val: u32, base: u64, field_size: u8, field_max: u8) -> boo
     true
 }
 
-#[inline(never)]
-pub fn led_blink() {
+pub fn led_init() {
     let val: u32 = 1 << LED_GPFBIT;
-
     let reg = GPIO_BASE + LED_GPFSEL;
     let old = mmio_read(reg);
     let new = old | val;
 
     mmio_write(reg, new);
+}
 
-    for _ in 0..500000 {
-        mmio_write(GPIO_BASE + LED_GPCLR, 1 << LED_GPIO_BIT);
-    }
+#[inline(never)]
+pub fn led_blink() {
+    for _ in 0..750000 {}
+    mmio_write(GPIO_BASE + LED_GPCLR, 1 << LED_GPIO_BIT);
 
-    for _ in 0..500000 {
-        mmio_write(GPIO_BASE + LED_GPSET, 1 << LED_GPIO_BIT);
-    }
+    for _ in 0..750000 {}
+    mmio_write(GPIO_BASE + LED_GPSET, 1 << LED_GPIO_BIT);
 }
 
 const GPIO_BASE: u64 = PERIPHERAL_BASE + 0x200000;
