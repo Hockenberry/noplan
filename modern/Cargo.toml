@@ -16,3 +16,6 @@ debug=true
 [[bin]]
 name = "kernal"
 path = "src/kernal.rs"
+
+
+'

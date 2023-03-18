@@ -3,6 +3,8 @@
 _start:
     // Check processor ID is zero (executing on main core), else hang
     mrs     x1, mpidr_el1
+    ldr     x1, BOOT_CORE_ID
+
     and     x1, x1, #3
     cbz     x1, 2f
 

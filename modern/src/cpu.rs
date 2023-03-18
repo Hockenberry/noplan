@@ -8,4 +8,4 @@ pub use arch_cpu::wait_forever;
 #[path = "arch/aarch64/cpu.rs"]
 mod arch_cpu;
 
-mod boot;
+pub(crate) mod boot;

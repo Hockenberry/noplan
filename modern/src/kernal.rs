@@ -45,18 +45,18 @@ fn kernel_main() -> ! {
         env!("CARGO_PKG_VERSION")
     );
 
-    print!("PERIPHERAL_BASE = {PERIPHERAL_BASE:0X}\n");
+    print!(
+        "[1] Booting on: {} (cpu: {})\n",
+        bsp::board_name(),
+        cpu::boot::BOOT_CORE_ID
+    );
+
+    print!("[3] PERIPHERAL_BASE = {PERIPHERAL_BASE:0X}\n");
 
     for _ in 0..20 {
         stars_draw(1);
         led_blink();
     }
-
-    // print!(
-    //     "[1] Booting on: {} (cpu: {})\n",
-    //     bsp::board_name(),
-    //     BOOT_CORE_ID
-    // );
 
     print!("wait forever");
 
