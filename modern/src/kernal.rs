@@ -21,6 +21,11 @@ mod rpi_uart;
 mod simple_console;
 mod sync;
 
+pub mod built_info {
+    // The file has been placed there by the build script.
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
 /// Early init code.
 unsafe fn kernel_init() -> ! {
     uart_init();
@@ -39,10 +44,15 @@ fn stars_draw(n: u8) {
 }
 
 fn kernel_main() -> ! {
+    let is_dirty = built_info::GIT_DIRTY
+        .map(|v| if v { "(dirty)" } else { "" })
+        .unwrap_or("");
     print!(
-        "[0] {} {}\n",
+        "[0] {} {} {} {}\n",
         env!("CARGO_PKG_NAME"),
-        env!("CARGO_PKG_VERSION")
+        env!("CARGO_PKG_VERSION"),
+        built_info::GIT_COMMIT_HASH_SHORT.unwrap(),
+        is_dirty
     );
 
     print!(
@@ -51,7 +61,7 @@ fn kernel_main() -> ! {
         cpu::boot::BOOT_CORE_ID
     );
 
-    print!("[3] PERIPHERAL_BASE = {PERIPHERAL_BASE:0X}\n");
+    print!("[3] RPi PERIPHERAL_BASE = {PERIPHERAL_BASE:0X}\n");
 
     for _ in 0..20 {
         stars_draw(1);

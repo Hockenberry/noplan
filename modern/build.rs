@@ -1,6 +1,8 @@
 use std::{env, fs, process};
 
 fn main() {
+    built::write_built_file().expect("Failed to acquire build-time information");
+
     let ld_script_path = match env::var("LD_SCRIPT_PATH") {
         Ok(var) => var,
         _ => process::exit(0),
